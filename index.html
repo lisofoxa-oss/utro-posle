@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Утро после — памятка</title>
+<title>BAC Calculator — Калькулятор опьянения</title>
+<meta name="description" content="Рассчитай уровень опьянения, узнай когда протрезвеешь и что делать утром. Калькулятор BAC с базой напитков и коктейлей. / Calculate your blood alcohol level, get personalized recovery plan.">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
 
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
@@ -15,657 +16,698 @@
     background: #0f0e12;
     color: #e8e4e0;
     line-height: 1.6;
-    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
   }
 
+  /* ===== LANG SWITCH ===== */
+  .lang-bar {
+    display: flex; justify-content: flex-end; padding: 0.6rem 1rem;
+    background: rgba(15,14,18,0.92); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    position: sticky; top: 0; z-index: 100; gap: 0.3rem;
+  }
+  .lang-btn {
+    padding: 0.3rem 0.7rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);
+    background: transparent; color: rgba(232,228,224,0.35); font-size: 0.75rem;
+    font-family: 'Inter',sans-serif; cursor: pointer; transition: all 0.25s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .lang-btn.active { background: rgba(180,120,255,0.15); border-color: rgba(180,120,255,0.3); color: #d4b8ff; }
+  .lang-btn:active { opacity: 0.7; }
+
   /* ===== HERO ===== */
   .hero {
-    position: relative;
-    min-height: 100dvh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    background: linear-gradient(160deg, #0f0e12 0%, #1a1625 40%, #0d0b14 100%);
-    overflow: hidden;
-    padding: env(safe-area-inset-top) 0;
+    text-align: center; padding: 2.5rem 1.5rem 1.5rem;
+    background: linear-gradient(160deg,#0f0e12 0%,#1a1625 40%,#0d0b14 100%);
+    overflow: hidden; position: relative;
   }
-
   .hero::before {
-    content: '';
-    position: absolute;
-    width: min(80vw, 600px);
-    height: min(80vw, 600px);
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(180, 120, 255, 0.08) 0%, transparent 70%);
-    top: -30%;
-    right: -20%;
-    animation: float 12s ease-in-out infinite;
+    content:'';position:absolute;width:min(70vw,500px);height:min(70vw,500px);
+    border-radius:50%;background:radial-gradient(circle,rgba(180,120,255,0.07) 0%,transparent 70%);
+    top:-20%;right:-20%;pointer-events:none;
   }
-
-  .hero::after {
-    content: '';
-    position: absolute;
-    width: min(60vw, 400px);
-    height: min(60vw, 400px);
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 180, 200, 0.06) 0%, transparent 70%);
-    bottom: -15%;
-    left: -20%;
-    animation: float 10s ease-in-out infinite reverse;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translate(0, 0); }
-    50% { transform: translate(20px, -20px); }
-  }
-
-  .hero-content { position: relative; z-index: 1; padding: 2rem 1.5rem; width: 100%; }
-
-  .hero-badge {
-    display: inline-block;
-    padding: 0.35rem 1rem;
-    border: 1px solid rgba(180, 120, 255, 0.3);
-    border-radius: 100px;
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: rgba(180, 120, 255, 0.7);
-    margin-bottom: 1.2rem;
-  }
-
   .hero h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2.8rem, 14vw, 5rem);
-    font-weight: 400;
-    line-height: 1.05;
-    margin-bottom: 0.8rem;
-    background: linear-gradient(135deg, #e8e4e0 0%, #b894e8 50%, #e8e4e0 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-family:'Playfair Display',serif;
+    font-size:clamp(2rem,10vw,3.5rem);font-weight:400;line-height:1.1;
+    background:linear-gradient(135deg,#e8e4e0 0%,#b894e8 50%,#e8e4e0 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   }
-
-  .hero p {
-    font-size: clamp(0.95rem, 3.5vw, 1.2rem);
-    color: rgba(232, 228, 224, 0.45);
-    max-width: 440px;
-    margin: 0 auto;
-    font-weight: 300;
-    padding: 0 0.5rem;
-  }
-
-  .scroll-hint {
-    position: absolute;
-    bottom: max(1.5rem, env(safe-area-inset-bottom));
-    left: 50%;
-    transform: translateX(-50%);
-    color: rgba(232, 228, 224, 0.2);
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    animation: bounce 2s infinite;
-    white-space: nowrap;
-  }
-
-  @keyframes bounce {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(-6px); }
-  }
-
-  /* ===== STICKY NAV ===== */
-  .nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(15, 14, 18, 0.92);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding: 0 env(safe-area-inset-right) 0 env(safe-area-inset-left);
-  }
-  .nav::-webkit-scrollbar { display: none; }
-
-  .nav-inner {
-    display: flex;
-    gap: 0.25rem;
-    padding: 0.6rem 1rem;
-    min-width: max-content;
-    justify-content: center;
-  }
-
-  .nav a {
-    display: block;
-    padding: 0.5rem 0.9rem;
-    border-radius: 100px;
-    font-size: 0.78rem;
-    font-weight: 400;
-    color: rgba(232, 228, 224, 0.4);
-    text-decoration: none;
-    white-space: nowrap;
-    transition: all 0.25s;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
-
-  .nav a:active { background: rgba(180, 120, 255, 0.1); }
+  .hero p { font-size:clamp(0.85rem,3vw,1rem);color:rgba(232,228,224,0.4);font-weight:300;margin-top:0.5rem;max-width:500px;margin-left:auto;margin-right:auto; }
 
   /* ===== CONTAINER ===== */
-  .container {
-    max-width: 640px;
-    margin: 0 auto;
-    padding: 0 1.2rem;
+  .container { max-width: 720px; margin: 0 auto; padding: 0 1rem; }
+
+  /* ===== SECTION ===== */
+  section { padding: 1.5rem 0; }
+  .section-title { font-family:'Playfair Display',serif; font-size:1.3rem;font-weight:400;margin-bottom:0.2rem; }
+  .section-sub { font-size:0.8rem;color:rgba(232,228,224,0.35);font-weight:300;margin-bottom:1rem; }
+
+  /* ===== PROFILE ===== */
+  .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .profile-grid .full { grid-column: 1 / -1; }
+  .field label { display:block;font-size:0.75rem;color:rgba(232,228,224,0.4);font-weight:400;margin-bottom:0.3rem; }
+  .field input {
+    width:100%;padding:0.65rem 0.8rem;border-radius:10px;border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.03);color:#e8e4e0;font-size:0.9rem;font-family:'Inter',sans-serif;
+    outline:none;transition:border-color 0.3s;
+  }
+  .field input:focus { border-color:rgba(180,120,255,0.3); }
+  .gender-group { display:flex;gap:0.5rem; }
+  .gender-btn {
+    flex:1;padding:0.65rem;border-radius:10px;border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.03);color:rgba(232,228,224,0.4);font-size:0.85rem;
+    font-family:'Inter',sans-serif;cursor:pointer;text-align:center;transition:all 0.3s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .gender-btn.active { background:rgba(180,120,255,0.12);border-color:rgba(180,120,255,0.3);color:#d4b8ff; }
+  .hours-row { display:flex;gap:0.5rem;align-items:center; }
+  .hours-row input { flex:1;accent-color:#b894e8; }
+
+  /* ===== DRINKS BROWSER ===== */
+  .search-box {
+    width:100%;padding:0.65rem 0.8rem;border-radius:10px;border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.03);color:#e8e4e0;font-size:0.85rem;font-family:'Inter',sans-serif;
+    outline:none;margin-bottom:0.6rem;transition:border-color 0.3s;
+  }
+  .search-box:focus { border-color:rgba(180,120,255,0.3); }
+  .search-box::placeholder { color:rgba(232,228,224,0.15); }
+
+  .cat-tabs {
+    display:flex;gap:0.3rem;overflow-x:auto;padding-bottom:0.4rem;
+    -webkit-overflow-scrolling:touch;scrollbar-width:none;
+  }
+  .cat-tabs::-webkit-scrollbar { display:none; }
+  .cat-tab {
+    flex-shrink:0;padding:0.35rem 0.75rem;border-radius:100px;border:1px solid rgba(255,255,255,0.06);
+    background:transparent;color:rgba(232,228,224,0.35);font-size:0.72rem;font-family:'Inter',sans-serif;
+    cursor:pointer;transition:all 0.25s;white-space:nowrap;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .cat-tab.active { background:rgba(180,120,255,0.12);border-color:rgba(180,120,255,0.3);color:#d4b8ff; }
+
+  .drinks-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+    gap:0.5rem;margin-bottom:0.5rem;
+    max-height: 340px; overflow-y: auto; padding-right: 0.3rem;
+  }
+  .drinks-grid::-webkit-scrollbar { width:3px; }
+  .drinks-grid::-webkit-scrollbar-thumb { background:rgba(180,120,255,0.2);border-radius:10px; }
+
+  .drink-card {
+    padding:0.7rem 0.6rem;border-radius:10px;border:1px solid rgba(255,255,255,0.05);
+    background:rgba(255,255,255,0.02);cursor:pointer;transition:all 0.25s;
+    text-align:center;-webkit-tap-highlight-color:transparent;
+  }
+  .drink-card:active { background:rgba(180,120,255,0.08);border-color:rgba(180,120,255,0.2);transform:scale(0.97); }
+  .drink-card .emoji { font-size:1.3rem;display:block;margin-bottom:0.15rem; }
+  .drink-card .name { font-size:0.72rem;font-weight:500;color:rgba(232,228,224,0.7); }
+  .drink-card .abv { font-size:0.65rem;color:rgba(232,228,224,0.3);margin-top:0.1rem; }
+
+  /* ===== VOLUME MODAL ===== */
+  .modal-overlay {
+    position:fixed;inset:0;z-index:200;
+    background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);
+    display:flex;align-items:center;justify-content:center;
+    padding:1.5rem;opacity:0;pointer-events:none;transition:opacity 0.3s;
+  }
+  .modal-overlay.open { opacity:1;pointer-events:auto; }
+
+  .modal {
+    background:#1a1720;border:1px solid rgba(255,255,255,0.06);
+    border-radius:20px;padding:1.5rem;width:100%;max-width:320px;
+    transform:scale(0.92);transition:transform 0.3s;
+  }
+  .modal-overlay.open .modal { transform:scale(1); }
+  .modal h3 { font-size:1rem;font-weight:500;margin-bottom:0.2rem; }
+  .modal .mod-sub { font-size:0.78rem;color:rgba(232,228,224,0.4);margin-bottom:1rem; }
+  .modal .vol-input {
+    width:100%;padding:0.75rem;border-radius:10px;border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.03);color:#e8e4e0;font-size:1.1rem;text-align:center;
+    font-family:'Inter',sans-serif;outline:none;margin-bottom:0.4rem;
+  }
+  .modal .vol-input:focus { border-color:rgba(180,120,255,0.3); }
+  .modal .vol-presets { display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1rem;justify-content:center; }
+  .modal .vol-preset {
+    padding:0.3rem 0.6rem;border-radius:6px;border:1px solid rgba(255,255,255,0.06);
+    background:rgba(255,255,255,0.02);color:rgba(232,228,224,0.4);font-size:0.72rem;
+    cursor:pointer;font-family:'Inter',sans-serif;-webkit-tap-highlight-color:transparent;
+  }
+  .modal-btns { display:flex;gap:0.5rem; }
+  .modal-btns button {
+    flex:1;padding:0.65rem;border-radius:10px;border:none;font-size:0.85rem;
+    font-family:'Inter',sans-serif;cursor:pointer;font-weight:500;-webkit-tap-highlight-color:transparent;
+  }
+  .modal .btn-add { background:rgba(180,120,255,0.2);color:#d4b8ff; }
+  .modal .btn-cancel { background:rgba(255,255,255,0.04);color:rgba(232,228,224,0.4); }
+
+  /* ===== MY DRINKS ===== */
+  .my-drinks-header {
+    display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;
+  }
+  .my-drinks-header h3 { font-size:0.85rem;font-weight:500;color:rgba(232,228,224,0.6); }
+  .clear-btn {
+    padding:0.3rem 0.7rem;border-radius:6px;border:1px solid rgba(255,255,255,0.06);
+    background:transparent;color:rgba(232,228,224,0.25);font-size:0.7rem;
+    cursor:pointer;font-family:'Inter',sans-serif;-webkit-tap-highlight-color:transparent;
   }
 
-  /* ===== SECTIONS ===== */
-  section { padding: 2.5rem 0; }
-  section:first-of-type { padding-top: 1.5rem; }
+  .drink-entry {
+    display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.6rem;
+    background:rgba(255,255,255,0.02);border-radius:8px;margin-bottom:0.35rem;
+    border:1px solid rgba(255,255,255,0.04);
+    animation: slideIn 0.25s ease;
+  }
+  @keyframes slideIn { from{opacity:0;transform:translateX(-10px)} to{opacity:1;transform:translateX(0)} }
+  .drink-entry .emoji { font-size:1.1rem;min-width:1.3rem; }
+  .drink-entry .info { flex:1; }
+  .drink-entry .info .top { font-size:0.78rem;font-weight:500; }
+  .drink-entry .info .sub { font-size:0.68rem;color:rgba(232,228,224,0.3); }
+  .drink-entry .alc-grams { font-size:0.7rem;color:rgba(180,120,255,0.5);font-weight:500;min-width:2.5rem;text-align:right; }
+  .drink-entry .rm-btn {
+    width:1.6rem;height:1.6rem;border-radius:50%;border:none;
+    background:rgba(255,80,80,0.1);color:#ff6b6b;font-size:0.9rem;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;
+  }
+  .empty-drinks { text-align:center;padding:1rem;font-size:0.8rem;color:rgba(232,228,224,0.2);font-weight:300; }
 
-  .section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
-    font-weight: 400;
-    margin-bottom: 0.3rem;
-    line-height: 1.2;
+  /* ===== DASHBOARD ===== */
+  .dashboard {
+    background:linear-gradient(135deg,rgba(180,120,255,0.04),rgba(255,180,200,0.02));
+    border:1px solid rgba(180,120,255,0.1);border-radius:20px;padding:1.5rem;
+  }
+  .bac-primary { text-align:center;padding:0.5rem 0 0.8rem; }
+  .bac-value {
+    font-size:clamp(3rem,12vw,4.5rem);font-weight:800;letter-spacing:-0.03em;
+    font-feature-settings:"tnum";transition:color 0.5s;
+  }
+  .bac-unit { font-size:0.9rem;font-weight:400;color:rgba(232,228,224,0.3);margin-left:0.2rem; }
+  .bac-label { font-size:0.7rem;color:rgba(232,228,224,0.25);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.2rem; }
+  .bac-bar-wrap {
+    height:4px;border-radius:4px;background:rgba(255,255,255,0.05);overflow:hidden;margin:0.8rem 0;
+  }
+  .bac-bar { height:100%;border-radius:4px;transition:width 0.5s ease,background 0.5s;width:0%; }
+
+  .bac-info { display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-top:1rem; }
+  .bac-card {
+    background:rgba(255,255,255,0.02);border-radius:10px;padding:0.8rem;text-align:center;
+    border:1px solid rgba(255,255,255,0.04);
+  }
+  .bac-card .val { font-size:1rem;font-weight:600; }
+  .bac-card .lbl { font-size:0.68rem;color:rgba(232,228,224,0.3);margin-top:0.1rem; }
+
+  .state-label {
+    display:inline-block;padding:0.25rem 0.8rem;border-radius:100px;
+    font-size:0.7rem;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;
+    margin-top:0.5rem;
   }
 
-  .section-subtitle {
-    color: rgba(232, 228, 224, 0.35);
-    font-size: 0.85rem;
-    margin-bottom: 1.5rem;
-    font-weight: 300;
-    line-height: 1.5;
+  /* ===== RECOVERY ===== */
+  .rec-card {
+    background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);
+    border-radius:14px;padding:1rem;margin-bottom:0.6rem;
   }
+  .rec-card h4 { font-size:0.85rem;font-weight:500;margin-bottom:0.3rem; }
+  .rec-card p, .rec-card li { font-size:0.78rem;color:rgba(232,228,224,0.5);font-weight:300;line-height:1.5; }
+  .rec-card ul { list-style:none;padding:0; }
+  .rec-card li { padding:0.15rem 0;padding-left:0.8rem;position:relative; }
+  .rec-card li::before { content:'—';position:absolute;left:0;color:rgba(180,120,255,0.4); }
 
-  /* ===== CARDS ===== */
-  .card-grid { display: flex; flex-direction: column; gap: 0.75rem; }
-
-  .card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 14px;
-    padding: 1.2rem;
-    transition: all 0.3s;
+  /* ===== MEMO ===== */
+  .memo-grid { display:grid;grid-template-columns:1fr 1fr;gap:0.5rem; }
+  .memo-item {
+    background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);
+    border-radius:10px;padding:0.8rem;
   }
-
-  .card:active { background: rgba(255, 255, 255, 0.06); }
-
-  .card-icon { font-size: 1.3rem; margin-bottom: 0.5rem; display: block; }
-  .card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; color: #d4b8ff; }
-  .card p { font-size: 0.82rem; color: rgba(232, 228, 224, 0.55); font-weight: 300; line-height: 1.6; }
-  .card ul { list-style: none; padding: 0; margin-top: 0.3rem; }
-  .card li {
-    font-size: 0.82rem;
-    color: rgba(232, 228, 224, 0.55);
-    font-weight: 300;
-    padding: 0.25rem 0;
-    padding-left: 1rem;
-    position: relative;
-    line-height: 1.5;
-  }
-  .card li::before { content: '—'; position: absolute; left: 0; color: rgba(180, 120, 255, 0.5); }
-
-  /* ===== TIPS (блоки с предупреждениями) ===== */
-  .tip-list { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 1rem; }
-
-  .tip-item {
-    display: flex;
-    gap: 0.75rem;
-    align-items: flex-start;
-    padding: 0.9rem 1rem;
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.04);
-  }
-
-  .tip-item .emoji { font-size: 1.1rem; min-width: 1.3rem; line-height: 1.4; }
-  .tip-item .text {
-    font-size: 0.82rem;
-    color: rgba(232, 228, 224, 0.55);
-    font-weight: 300;
-    line-height: 1.5;
-  }
-  .tip-item .text strong { color: rgba(232, 228, 224, 0.8); font-weight: 500; }
-
-  /* ===== HARM STATS ===== */
-  .harm-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.6rem;
-    margin-bottom: 1.2rem;
-  }
-
-  .harm-stat {
-    text-align: center;
-    padding: 1.2rem 0.8rem;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  .harm-stat .number {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: #ff8a8a;
-    display: block;
-    margin-bottom: 0.2rem;
-  }
-
-  .harm-stat .label {
-    font-size: 0.75rem;
-    color: rgba(232, 228, 224, 0.45);
-    font-weight: 300;
-    line-height: 1.4;
-  }
-
-  /* ===== FACTS ===== */
-  .facts-list { display: flex; flex-direction: column; gap: 0.6rem; }
-
-  .fact-card {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 14px;
-    padding: 1rem 1.2rem;
-    display: flex;
-    gap: 0.8rem;
-    align-items: flex-start;
-  }
-
-  .fact-number {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: rgba(180, 120, 255, 0.2);
-    line-height: 1.1;
-    min-width: 1.8rem;
-  }
-
-  .fact-card h3 { font-size: 0.88rem; font-weight: 500; margin-bottom: 0.2rem; color: #d4b8ff; }
-  .fact-card p { font-size: 0.8rem; color: rgba(232, 228, 224, 0.5); font-weight: 300; line-height: 1.5; }
-
-  /* ===== QUOTE ===== */
-  .quote-block {
-    background: linear-gradient(135deg, rgba(180, 120, 255, 0.06), rgba(255, 180, 200, 0.04));
-    border-left: 2px solid rgba(180, 120, 255, 0.3);
-    border-radius: 0 14px 14px 0;
-    padding: 1.5rem 1.5rem 1.5rem 1.8rem;
-    margin: 1.5rem 0;
-  }
-
-  .quote-block p {
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem;
-    font-style: italic;
-    color: rgba(232, 228, 224, 0.7);
-    line-height: 1.6;
-  }
-
-  .quote-block .author {
-    margin-top: 0.6rem;
-    font-size: 0.75rem;
-    font-style: normal;
-    color: rgba(232, 228, 224, 0.3);
-    font-family: 'Inter', sans-serif;
-  }
-
-  /* ===== WOMEN SECTION ===== */
-  .women-section {
-    background: linear-gradient(135deg, rgba(255, 180, 200, 0.04), rgba(180, 120, 255, 0.04));
-    border: 1px solid rgba(255, 180, 200, 0.1);
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin: 1.5rem 0;
-  }
-
-  .women-section h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.15rem;
-    font-weight: 400;
-    margin-bottom: 1rem;
-    color: #ffc0d0;
-  }
-
-  .warning-item {
-    display: flex;
-    gap: 0.75rem;
-    padding: 0.85rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  }
-
-  .warning-item:last-child { border-bottom: none; }
-
-  .warning-icon { font-size: 1.1rem; min-width: 1.3rem; line-height: 1.5; }
-  .warning-item h4 { font-size: 0.85rem; font-weight: 500; margin-bottom: 0.15rem; color: #ffb0c0; }
-  .warning-item p { font-size: 0.8rem; color: rgba(232, 228, 224, 0.5); font-weight: 300; line-height: 1.5; }
-
-  /* ===== DIVIDER ===== */
-  .divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(180, 120, 255, 0.15), transparent);
-    margin: 0.5rem 0;
-  }
+  .memo-item .emoji { font-size:1rem;display:block;margin-bottom:0.2rem; }
+  .memo-item h4 { font-size:0.78rem;font-weight:500;color:#d4b8ff;margin-bottom:0.15rem; }
+  .memo-item p { font-size:0.7rem;color:rgba(232,228,224,0.45);font-weight:300;line-height:1.4; }
 
   /* ===== FOOTER ===== */
-  footer {
-    text-align: center;
-    padding: 2.5rem 1.5rem max(2.5rem, env(safe-area-inset-bottom));
-    color: rgba(232, 228, 224, 0.15);
-    font-size: 0.75rem;
-    font-weight: 300;
-    border-top: 1px solid rgba(255, 255, 255, 0.03);
-  }
+  footer { text-align:center;padding:2rem 1rem max(2rem,env(safe-area-inset-bottom));color:rgba(232,228,224,0.12);font-size:0.7rem;font-weight:300;border-top:1px solid rgba(255,255,255,0.03);margin-top:1rem; }
 
-  /* ===== TABLET+ ===== */
-  @media (min-width: 480px) {
-    .container { padding: 0 2rem; }
-    section { padding: 3rem 0; }
-    .card-grid.sm-2 { flex-direction: row; flex-wrap: wrap; }
-    .card-grid.sm-2 .card { flex: 1 1 calc(50% - 0.375rem); }
-    .harm-grid { gap: 0.75rem; }
-    .harm-stat { padding: 1.5rem 1rem; }
-    .harm-stat .number { font-size: 1.8rem; }
+  /* ===== RESPONSIVE ===== */
+  @media (min-width:600px) {
+    .container { padding:0 2rem; }
+    .drinks-grid { grid-template-columns:repeat(auto-fill,minmax(150px,1fr));max-height:400px; }
+    .bac-info { grid-template-columns:repeat(4,1fr); }
+    .memo-grid { grid-template-columns:repeat(3,1fr); }
+    section { padding:2rem 0; }
+    .profile-grid { grid-template-columns:1fr 1fr 1fr; }
+    .profile-grid .full { grid-column:span 3; }
   }
-
-  @media (min-width: 640px) {
-    body { background: #0d0c10; }
-    .container { max-width: 720px; padding: 0 2.5rem; }
-    section { padding: 4rem 0; }
-    .card-grid { flex-direction: row; flex-wrap: wrap; }
-    .card { flex: 1 1 calc(50% - 0.375rem); padding: 1.5rem; }
-    .card-grid.three .card { flex: 1 1 calc(33.333% - 0.5rem); }
-    .harm-grid { grid-template-columns: repeat(4, 1fr); }
-    .section-title { font-size: 1.75rem; }
-    .women-section { padding: 2rem; }
+  @media (min-width:900px) {
+    .drinks-layout { display:grid;grid-template-columns:1fr 1fr;gap:1rem; }
   }
 </style>
 </head>
 <body>
 
-<!-- ===== HERO ===== -->
-<section class="hero">
-  <div class="hero-content">
-    <div class="hero-badge">Памятка</div>
-    <h1>Утро после</h1>
-    <p>Что делать, что есть и о чём стоит знать — без морализаторства, по фактам</p>
-  </div>
-  <div class="scroll-hint">Листай</div>
-</section>
+<div class="lang-bar">
+  <button class="lang-btn active" data-lang="ru" onclick="switchLang('ru')">RU</button>
+  <button class="lang-btn" data-lang="en" onclick="switchLang('en')">EN</button>
+</div>
 
-<!-- ===== NAV ===== -->
-<nav class="nav">
-  <div class="nav-inner">
-    <a href="#morning">🌅 Утро</a>
-    <a href="#day">☀️ День</a>
-    <a href="#harm">⚠️ Вред</a>
-    <a href="#women">👩 Девушкам</a>
-    <a href="#quick-tips">🧭 Чек-лист</a>
-  </div>
-</nav>
+<section class="hero">
+  <h1 id="hero-title">Калькулятор опьянения</h1>
+  <p id="hero-sub">Рассчитай уровень алкоголя в крови, узнай последствия и получи персональный план восстановления</p>
+</section>
 
 <div class="container">
 
-  <!-- ===== MORNING ===== -->
-  <section id="morning">
-    <h2 class="section-title">🌅 Утро — первая помощь</h2>
-    <p class="section-subtitle">Организм обезвожен, истощён и требует бережного обращения</p>
-
-    <div class="card-grid sm-2">
-      <div class="card">
-        <span class="card-icon">💧</span>
-        <h3>Вода — база</h3>
-        <p>Алкоголь — мощный диуретик. Первое и главное — восполнить жидкость. Начни со стакана воды, лучше с лимоном и щепоткой соли — это электролиты.</p>
-      </div>
-      <div class="card">
-        <span class="card-icon">🥣</span>
-        <h3>Куриный бульон</h3>
-        <p>Тёплый, нежирный — даёт соль, аминокислоты и не нагружает желудок. Работает лучше любого энергетика.</p>
-      </div>
-    </div>
-
-    <div class="card-grid three" style="margin-top: 0.75rem;">
-      <div class="card">
-        <span class="card-icon">🍌</span>
-        <h3>Бананы</h3>
-        <p>Калий, магний, быстрая энергия. Алкоголь вымывает электролиты — банан закрывает базовые потребности мягко и натурально.</p>
-      </div>
-      <div class="card">
-        <span class="card-icon">🍳</span>
-        <h3>Яичница / омлет</h3>
-        <p>Яйца богаты цистеином — аминокислотой, которая помогает расщеплять ацетальдегид (тот самый токсин, из-за которого тошнит и болит голова).</p>
-      </div>
-      <div class="card">
-        <span class="card-icon">🍯</span>
-        <h3>Тост с мёдом</h3>
-        <p>Тост впитывает остатки алкоголя в желудке, мёд даёт фруктозу — она ускоряет метаболизм этанола. Добавь кусочек масла для жиров.</p>
-      </div>
-    </div>
-
-    <div class="tip-list">
-      <div class="tip-item">
-        <span class="emoji">🚫</span>
-        <span class="text"><strong>Кошмарный вариант:</strong> кофе натощак — он сужает сосуды (голова будет болеть сильнее) и обезвоживает дальше.</span>
-      </div>
-      <div class="tip-item">
-        <span class="emoji">🚫</span>
-        <span class="text"><strong>Не вздумай:</strong> «опохмелиться». Новый алкоголь только отсрочит похмелье и увеличит нагрузку на печень и сердце.</span>
-      </div>
-      <div class="tip-item">
-        <span class="emoji">✅</span>
-        <span class="text"><strong>Лучшее, что можно сделать:</strong> открыть окно (кислород ускоряет детоксикацию), принять тёплый душ, лечь с холодным компрессом на лоб.</span>
-      </div>
-    </div>
-
-    <div class="quote-block">
-      <p>«Похмелье — это не наказание. Это защитный сигнал организма: "пожалуйста, дай мне воды, отдыха и не делай так больше"»</p>
-      <div class="author">— неизвестный нейробиолог</div>
-    </div>
-  </section>
-
-  <!-- ===== DAY ===== -->
-  <section id="day">
-    <h2 class="section-title">☀️ День — восстановление</h2>
-    <p class="section-subtitle">Желудок успокоился, пора помочь организму вернуться в строй</p>
-
-    <div class="card-grid sm-2">
-      <div class="card">
-        <span class="card-icon">🥑</span>
-        <h3>Лёгкая, но питательная еда</h3>
-        <ul>
-          <li>Авокадо на тосте — калий + здоровые жиры</li>
-          <li>Овсяная каша на воде — обволакивает желудок</li>
-          <li>Паста с овощами — сложные углеводы для печени</li>
-          <li>Арбуз, дыня, виноград — фруктоза + вода</li>
-        </ul>
-      </div>
-      <div class="card">
-        <span class="card-icon">🧘</span>
-        <h3>Режим: никакого геройства</h3>
-        <ul>
-          <li>Прогулка в парке — оксигенация крови</li>
-          <li>Душ контрастный (заканчивать тёплым)</li>
-          <li>Сон — лучшее лекарство, поспать днём</li>
-          <li>Никакого спорта — сердце и так перегружено</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="card-grid three" style="margin-top: 0.75rem;">
-      <div class="card">
-        <span class="card-icon">🫚</span>
-        <h3>Имбирный чай</h3>
-        <p>Снимает тошноту, успокаивает желудок, обладает лёгким противовоспалительным действием.</p>
-      </div>
-      <div class="card">
-        <span class="card-icon">🥒</span>
-        <h3>Рассол (да, работает)</h3>
-        <p>Огуречный или капустный — электролиты в чистом виде. Только натурального брожения, не уксусный.</p>
-      </div>
-      <div class="card">
-        <span class="card-icon">💊</span>
-        <h3>Ибупрофен (если очень надо)</h3>
-        <p>Снимает головную боль. Но: не на пустой желудок и не парацетамол — он даёт нагрузку на печень, которая и так занята.</p>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- ===== HARM ===== -->
-  <section id="harm">
-    <h2 class="section-title">⚠️ Цифры, о которых редко говорят</h2>
-    <p class="section-subtitle">Не чтобы напугать — чтобы был повод задуматься</p>
-
-    <div class="harm-grid">
-      <div class="harm-stat">
-        <span class="number">3 млн</span>
-        <span class="label">смертей в год от алкоголя в мире (ВОЗ)</span>
-      </div>
-      <div class="harm-stat">
-        <span class="number">1-е</span>
-        <span class="label">место среди причин смерти людей 15–49 лет</span>
-      </div>
-      <div class="harm-stat">
-        <span class="number">200+</span>
-        <span class="label">заболеваний, связанных с алкоголем</span>
-      </div>
-      <div class="harm-stat">
-        <span class="number">1</span>
-        <span class="label">стандартный напиток = ~14 г чистого спирта</span>
-      </div>
-    </div>
-
-    <div class="facts-list">
-      <div class="fact-card">
-        <span class="fact-number">01</span>
-        <div>
-          <h3>Алкоголь — канцероген группы 1</h3>
-          <p>Та же категория, что асбест и формальдегид. Доказанная связь с раком груди, пищевода, печени, толстой кишки. Безопасной дозы не существует.</p>
+  <!-- PROFILE -->
+  <section>
+    <div class="section-title" id="prof-title">👤 О себе</div>
+    <div class="section-sub" id="prof-sub">Для точного расчёта</div>
+    <div class="profile-grid">
+      <div>
+        <div class="field">
+          <label id="l-gender">Пол</label>
+          <div class="gender-group">
+            <button class="gender-btn active" data-gender="male" onclick="setGender('male')" id="g-male">👨 Муж</button>
+            <button class="gender-btn" data-gender="female" onclick="setGender('female')" id="g-female">👩 Жен</button>
+          </div>
         </div>
       </div>
-      <div class="fact-card">
-        <span class="fact-number">02</span>
-        <div>
-          <h3>Снижение качества сна</h3>
-          <p>Алкоголь нарушает REM-фазу. Даже если ты проспала 8 часов — организм не восстановился. Отсюда разбитость, тревожность, туман в голове.</p>
+      <div>
+        <div class="field">
+          <label id="l-age">Возраст</label>
+          <input type="number" id="age-input" value="25" min="18" max="99">
         </div>
       </div>
-      <div class="fact-card">
-        <span class="fact-number">03</span>
-        <div>
-          <h3>Удар по микробиому</h3>
-          <p>Даже один эпизод меняет состав кишечных бактерий на недели. А здоровый кишечник — это иммунитет, настроение и кожа.</p>
+      <div>
+        <div class="field">
+          <label id="l-weight">Вес (кг)</label>
+          <input type="number" id="weight-input" value="60" min="30" max="250">
         </div>
       </div>
-      <div class="fact-card">
-        <span class="fact-number">04</span>
-        <div>
-          <h3>Тревога на следующий день — не "всё в голове"</h3>
-          <p>Алкоголь временно повышает GABA (торможение), а потом резко её снижает — мозг остаётся без защиты. Отсюда паника, навязчивые мысли, "hangxiety".</p>
+      <div class="full">
+        <div class="field">
+          <label id="l-hours">Часов с начала застолья</label>
+          <div class="hours-row">
+            <input type="range" id="hours-slider" min="0" max="12" value="1" step="0.5" oninput="syncHours(this.value)">
+            <span id="hours-display" style="font-size:0.9rem;font-weight:600;min-width:2.5rem;text-align:center;">1</span>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ===== WOMEN ===== -->
-  <section id="women">
-    <h2 class="section-title">👩 Для молодой девушки — отдельно</h2>
-    <p class="section-subtitle">Организм женщины метаболизирует алкоголь иначе. Это не «слабость» — это физиология.</p>
-
-    <div class="women-section">
-      <h3>Почему важно знать</h3>
-
-      <div class="warning-item">
-        <span class="warning-icon">🧬</span>
-        <div>
-          <h4>Меньше ферментов — больше токсинов</h4>
-          <p>В желудке женщины меньше алкогольдегидрогеназы — фермента, расщепляющего алкоголь. При одинаковом количестве выпитого концентрация этанола в крови женщины выше, чем у мужчины того же веса. Похмелье тяжелее, токсическая нагрузка — выше.</p>
-        </div>
+  <!-- DRINKS -->
+  <section>
+    <div class="section-title" id="dr-title">🍸 Напитки</div>
+    <div class="section-sub" id="dr-sub">Выбирай и добавляй — все сразу или по одному</div>
+    <input class="search-box" id="search-input" placeholder="🔍 Поиск напитка..." oninput="filterDrinks()">
+    <div class="cat-tabs" id="cat-tabs"></div>
+    <div class="drinks-layout">
+      <div>
+        <div class="drinks-grid" id="drinks-grid"></div>
       </div>
-
-      <div class="warning-item">
-        <span class="warning-icon">🎗️</span>
-        <div>
-          <h4>Рак груди: прямая связь</h4>
-          <p>Даже 1 порция алкоголя в день повышает риск рака молочной железы на 7–10%. Каждая дополнительная порция увеличивает риск. Это данные сотен тысяч наблюдений.</p>
+      <div>
+        <div class="my-drinks-header">
+          <h3 id="my-title">📋 Мои напитки</h3>
+          <button class="clear-btn" onclick="clearDrinks()" id="clear-btn">✕ Очистить</button>
         </div>
+        <div id="my-drinks-list"></div>
+        <div id="total-alc" style="font-size:0.75rem;color:rgba(232,228,224,0.25);text-align:right;padding:0.3rem 0;"></div>
       </div>
-
-      <div class="warning-item">
-        <span class="warning-icon">💊</span>
-        <div>
-          <h4>Гормональный фон и цикл</h4>
-          <p>Алкоголь нарушает баланс эстрогена и прогестерона, может сдвигать менструальный цикл, усиливать ПМС, снижать фертильность. Чем регулярнее употребление — тем заметнее эффект.</p>
-        </div>
-      </div>
-
-      <div class="warning-item">
-        <span class="warning-icon">🧠</span>
-        <div>
-          <h4>Кожа, внешность и отёки</h4>
-          <p>Алкоголь обезвоживает кожу, расширяет сосуды (купероз), снижает выработку коллагена. На утро — серый цвет лица, отёки, тёмные круги. Регулярное употребление старит визуально.</p>
-        </div>
-      </div>
-
-      <div class="warning-item">
-        <span class="warning-icon">❤️</span>
-        <div>
-          <h4>Сердце: женщины уязвимее</h4>
-          <p>Алкогольная кардиомиопатия у женщин развивается быстрее и при меньших дозах. Риск инсульта у женщин-курильщиц, принимающих контрацептивы и употребляющих алкоголь — экспоненциально выше.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="quote-block">
-      <p>«Не "не пей вообще". Но знай, как это работает. Выбор осознанный — лучше выбора по привычке»</p>
-      <div class="author">— просто напоминание</div>
     </div>
   </section>
 
-  <!-- ===== QUICK TIPS ===== -->
-  <section id="quick-tips">
-    <h2 class="section-title">🧭 Если совсем коротко</h2>
-    <p class="section-subtitle">Чек-лист на утро</p>
-
-    <div class="tip-list">
-      <div class="tip-item">
-        <span class="emoji">💧</span>
-        <span class="text"><strong>Вода + соль + лимон</strong> — первый шаг</span>
+  <!-- DASHBOARD -->
+  <section>
+    <div class="section-title" id="dash-title">📊 Твой уровень</div>
+    <div class="section-sub" id="dash-sub">Рассчитывается по формуле Видмарка</div>
+    <div class="dashboard">
+      <div class="bac-primary">
+        <span class="bac-value" id="bac-value">0.000</span><span class="bac-unit">‰</span>
+        <div class="state-label" id="state-label">—</div>
+        <div class="bac-label" id="bac-sub-label">BAC — уровень алкоголя в крови</div>
       </div>
-      <div class="tip-item">
-        <span class="emoji">🥣</span>
-        <span class="text"><strong>Бульон</strong> — второй</span>
+      <div class="bac-bar-wrap">
+        <div class="bac-bar" id="bac-bar"></div>
       </div>
-      <div class="tip-item">
-        <span class="emoji">🛌</span>
-        <span class="text"><strong>Сон, тишина, прохлада</strong> — дай организму прийти в себя</span>
-      </div>
-      <div class="tip-item">
-        <span class="emoji">🚫</span>
-        <span class="text"><strong>Не «лечи» похмелье алкоголем</strong> — это не лечение, а продление интоксикации</span>
-      </div>
-      <div class="tip-item">
-        <span class="emoji">📉</span>
-        <span class="text"><strong>Одна порция в день</strong> — верхняя граница low-risk по ВОЗ. Не норма, а потолок</span>
-      </div>
-      <div class="tip-item">
-        <span class="emoji">🌟</span>
-        <span class="text"><strong>Вовсе не пить — это нормально.</strong> Лучший способ избежать похмелья — не получить его</span>
+      <div class="bac-info">
+        <div class="bac-card"><div class="val" id="bac-state-name">—</div><div class="lbl" id="l-state">Состояние</div></div>
+        <div class="bac-card"><div class="val" id="bac-time-zero">—</div><div class="lbl" id="l-sober">До 0 ‰</div></div>
+        <div class="bac-card"><div class="val" id="bac-peak">0.000‰</div><div class="lbl" id="l-peak">Пик BAC</div></div>
+        <div class="bac-card"><div class="val" id="bac-grams">0</div><div class="lbl" id="l-grams">Чистый спирт (г)</div></div>
       </div>
     </div>
+    <div id="warning-section" style="display:none;margin-top:0.8rem;">
+      <div style="background:rgba(255,80,80,0.08);border:1px solid rgba(255,80,80,0.2);border-radius:12px;padding:1rem;font-size:0.8rem;color:#ff8a8a;text-align:center;" id="warning-text"></div>
+    </div>
+  </section>
+
+  <!-- RECOVERY -->
+  <section id="recovery-section">
+    <div class="section-title" id="rec-title">🛌 Утром — план восстановления</div>
+    <div class="section-sub" id="rec-sub">Персонализированные рекомендации</div>
+    <div id="recovery-content"></div>
+  </section>
+
+  <!-- MEMO -->
+  <section>
+    <div class="section-title" id="memo-title">📝 Памятка при похмелье</div>
+    <div class="section-sub" id="memo-sub">Коротко о главном</div>
+    <div class="memo-grid" id="memo-grid"></div>
   </section>
 
 </div>
 
-<footer>
-  Никакой морали, только информация.<br>
-  Береги себя
-</footer>
+<footer id="footer-text">BAC Calculator — информация для осознанного выбора. Не медицинский инструмент.</footer>
 
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <h3 id="modal-title">Добавить напиток</h3>
+    <div class="mod-sub" id="modal-sub">Объём в миллилитрах</div>
+    <input type="number" class="vol-input" id="modal-vol" placeholder="мл" inputmode="decimal">
+    <div class="vol-presets" id="modal-presets"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()" id="modal-cancel">Отмена</button>
+      <button class="btn-add" onclick="confirmModal()" id="modal-add">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const LANG = {
+  ru: {
+    heroTitle: 'Калькулятор опьянения',
+    heroSub: 'Рассчитай уровень алкоголя в крови, узнай последствия и получи персональный план восстановления',
+    profTitle: '👤 О себе', profSub: 'Для точного расчёта',
+    lGender: 'Пол', gFemale: '👩 Жен', gMale: '👨 Муж', lAge: 'Возраст', lWeight: 'Вес (кг)', lHours: 'Часов с начала застолья',
+    drTitle: '🍸 Напитки', drSub: 'Выбирай и добавляй — все сразу или по одному',
+    searchPl: '🔍 Поиск напитка...',
+    myTitle: '📋 Мои напитки', clearBtn: '✕ Очистить', emptyDrinks: 'Пока ничего не добавлено',
+    dashTitle: '📊 Твой уровень', dashSub: 'Рассчитывается по формуле Видмарка',
+    bacLabel: 'BAC — уровень алкоголя в крови',
+    lState: 'Состояние', lSober: 'До 0 ‰', lPeak: 'Пик BAC', lGrams: 'Чистый спирт (г)',
+    recTitle: '🛌 Утром — план восстановления', recSub: 'Персонализированные рекомендации',
+    memoTitle: '📝 Памятка при похмелье', memoSub: 'Коротко о главном',
+    modalTitle: 'Добавить напиток', modalSub: 'Объём в миллилитрах', modalCancel: 'Отмена', modalAdd: 'Добавить',
+    footer: 'BAC Calculator — информация для осознанного выбора. Не медицинский инструмент.',
+    catBeer: 'Пиво', catWine: 'Вино', catSpirits: 'Крепкое', catLiqueur: 'Ликёры', catCocktail: 'Коктейли', catCider: 'Сидр', catOther: 'Другое',
+    stateSober: 'Трезв(а)', stateEuphoria: 'Легко', stateExcite: 'Возбуждение', stateConfuse: 'Дезориентация', stateStupor: 'Оглушение', stateComa: 'Высокий риск', stateDanger: 'Критично',
+    severityNone: 'Трезвость', severityMild: 'Лёгкое', severityMod: 'Среднее', severityStrong: 'Сильное', severitySevere: 'Очень сильное', severityDanger: 'Опасно!',
+    warning1: '⚠️ BAC превышает 0.15% — высокий риск острого отравления. Нужна помощь.', warning2: '⚠️ BAC превышает 0.30% — критический уровень! Вызови скорую.',
+    recMildT: 'Лёгкое опьянение', recMildD: 'Организм справится сам. Пей воду, выспись. Утром — лёгкий завтрак.',
+    recModT: 'Среднее опьянение', recModD: 'Пей воду каждые 30 мин. Перед сном — стакан воды + электролиты. Утром: бульон, банан, омлет. Никакого кофе натощак.',
+    recStrongT: 'Сильное опьянение', recStrongD: 'Не ложись спать до снижения BAC. Пей воду, не пей алкоголь. Если тошнота — только вода маленькими глотками.',
+    recSevereT: 'Тяжёлое опьянение — нужна помощь', recSevereD: 'Обратись к врачу, если: рвота, спутанность сознания, замедленное дыхание, холодная кожа.',
+    tip1: 'В течение ночи пей воду — 0.5–1 л на каждые 100 г спирта', tip2: 'Не смешивай алкоголь с энергетиками — нагрузка на сердце', tip3: 'Не «опохмеляйся» — это продлевает интоксикацию', tip4: 'Прими душ, открой окно — кислород ускоряет детоксикацию',
+    recWater: 'Воду', recFood: 'Еду', recSleep: 'Сон', recAvoid: 'Избегать',
+    memo1h:'Вода с лимоном',memo1d:'Восполняет жидкость и электролиты',memo2h:'Куриный бульон',memo2d:'Соль, аминокислоты, легко усваивается',
+    memo3h:'Банан',memo3d:'Калий и магний — то, что вымывает алкоголь',memo4h:'Яичница',memo4d:'Цистеин расщепляет токсины',
+    memo5h:'Тост с мёдом',memo5d:'Фруктоза ускоряет метаболизм этанола',memo6h:'Имбирный чай',memo6d:'Снимает тошноту и воспаление',
+    womenT:'👩 Для девушек',womenD:'У женщин меньше фермента алкогольдегидрогеназы — BAC будет выше, чем у мужчины того же веса при том же количестве выпитого. Будь внимательнее.',
+    minZero:'~15 мин',
+  },
+  en: {
+    heroTitle: 'BAC Calculator',
+    heroSub: 'Calculate your blood alcohol level, check the effects and get a personalized recovery plan',
+    profTitle: '👤 About you', profSub: 'For accurate calculation',
+    lGender: 'Gender', gFemale: '👩 Female', gMale: '👨 Male', lAge: 'Age', lWeight: 'Weight (kg)', lHours: 'Hours since first drink',
+    drTitle: '🍸 Drinks', drSub: 'Pick and add — all at once or one by one',
+    searchPl: '🔍 Search drinks...',
+    myTitle: '📋 My drinks', clearBtn: '✕ Clear', emptyDrinks: 'Nothing added yet',
+    dashTitle: '📊 Your BAC', dashSub: 'Calculated via Widmark formula',
+    bacLabel: 'BAC — Blood Alcohol Content',
+    lState: 'State', lSober: 'To 0 ‰', lPeak: 'Peak BAC', lGrams: 'Pure alcohol (g)',
+    recTitle: '🛌 Morning recovery plan', recSub: 'Personalized recommendations',
+    memoTitle: '📝 Hangover memo', memoSub: 'Quick reference',
+    modalTitle: 'Add drink', modalSub: 'Volume in ml', modalCancel: 'Cancel', modalAdd: 'Add',
+    footer: 'BAC Calculator — information for informed choices. Not a medical tool.',
+    catBeer: 'Beer', catWine: 'Wine', catSpirits: 'Spirits', catLiqueur: 'Liqueurs', catCocktail: 'Cocktails', catCider: 'Cider', catOther: 'Other',
+    stateSober: 'Sober', stateEuphoria: 'Mild', stateExcite: 'Excitement', stateConfuse: 'Confusion', stateStupor: 'Stupor', stateComa: 'At risk', stateDanger: 'Critical',
+    severityNone: 'Sober', severityMild: 'Mild', severityMod: 'Moderate', severityStrong: 'Strong', severitySevere: 'Severe', severityDanger: 'Danger!',
+    warning1: '⚠️ BAC exceeds 0.15% — high risk of acute poisoning. Seek help.', warning2: '⚠️ BAC exceeds 0.30% — critical level! Call emergency services.',
+    recMildT: 'Mild intoxication', recMildD: 'Your body can handle it. Drink water, get good sleep. Light breakfast in the morning.',
+    recModT: 'Moderate intoxication', recModD: 'Drink water every 30 min. Before sleep — water + electrolytes. Morning: broth, banana, eggs. No coffee on empty stomach.',
+    recStrongT: 'Strong intoxication', recStrongD: 'Do not sleep until BAC drops. Drink water, no more alcohol. If nauseous — only water, small sips.',
+    recSevereT: 'Severe intoxication — need help', recSevereD: 'See a doctor if: vomiting, confusion, slow breathing, cold skin.',
+    tip1: 'Drink water throughout the night — 0.5–1 L per 100g of alcohol', tip2: 'Don\'t mix alcohol with energy drinks — heart strain', tip3: 'Don\'t "hair of the dog" — it prolongs intoxication', tip4: 'Take a shower, open a window — oxygen speeds detox',
+    recWater: 'Water', recFood: 'Food', recSleep: 'Sleep', recAvoid: 'Avoid',
+    memo1h:'Water + lemon',memo1d:'Replenishes fluids and electrolytes',memo2h:'Chicken broth',memo2d:'Salt, amino acids, easy to digest',
+    memo3h:'Banana',memo3d:'Potassium and magnesium — depleted by alcohol',memo4h:'Eggs',memo4d:'Cysteine helps break down toxins',
+    memo5h:'Toast with honey',memo5d:'Fructose speeds up ethanol metabolism',memo6h:'Ginger tea',memo6d:'Soothes nausea and inflammation',
+    womenT:'👩 For women',womenD:'Women have less alcohol dehydrogenase — BAC will be higher than a man of the same weight with the same amount of alcohol. Take care.',
+    minZero:'~15 min',
+  }
+};
+
+const DRINKS = [
+  {id:'b-lite',emoji:'🍺',abv:4.0,def:500,cat:'beer',name:{ru:'Пиво светлое',en:'Light beer'}},
+  {id:'b-reg',emoji:'🍺',abv:5.0,def:500,cat:'beer',name:{ru:'Пиво обычное',en:'Regular lager'}},
+  {id:'b-strong',emoji:'🍺',abv:8.0,def:500,cat:'beer',name:{ru:'Пиво крепкое',en:'Strong beer'}},
+  {id:'b-dark',emoji:'🍺',abv:5.0,def:500,cat:'beer',name:{ru:'Тёмное пиво',en:'Dark beer'}},
+  {id:'b-ipa',emoji:'🍺',abv:6.5,def:500,cat:'beer',name:{ru:'Craft IPA',en:'Craft IPA'}},
+  {id:'b-stout',emoji:'🍺',abv:5.0,def:500,cat:'beer',name:{ru:'Стаут',en:'Stout'}},
+  {id:'b-wheat',emoji:'🍺',abv:5.0,def:500,cat:'beer',name:{ru:'Пшеничное',en:'Wheat beer'}},
+  {id:'b-nalc',emoji:'🍺',abv:0.5,def:500,cat:'beer',name:{ru:'Безалкогольное',en:'Non-alcoholic'}},
+  {id:'w-red',emoji:'🍷',abv:13,def:150,cat:'wine',name:{ru:'Вино красное',en:'Red wine'}},
+  {id:'w-white',emoji:'🍷',abv:12,def:150,cat:'wine',name:{ru:'Вино белое',en:'White wine'}},
+  {id:'w-rose',emoji:'🍷',abv:12,def:150,cat:'wine',name:{ru:'Розе',en:'Rosé'}},
+  {id:'w-spark',emoji:'🥂',abv:12,def:150,cat:'wine',name:{ru:'Шампанское',en:'Champagne'}},
+  {id:'w-dessert',emoji:'🍷',abv:17,def:100,cat:'wine',name:{ru:'Десертное вино',en:'Dessert wine'}},
+  {id:'w-port',emoji:'🍷',abv:20,def:80,cat:'wine',name:{ru:'Портвейн',en:'Port wine'}},
+  {id:'w-vermouth',emoji:'🍷',abv:17,def:100,cat:'wine',name:{ru:'Вермут',en:'Vermouth'}},
+  {id:'s-vodka',emoji:'🥃',abv:40,def:50,cat:'spirits',name:{ru:'Водка',en:'Vodka'}},
+  {id:'s-whiskey',emoji:'🥃',abv:40,def:50,cat:'spirits',name:{ru:'Виски',en:'Whiskey'}},
+  {id:'s-rum-w',emoji:'🥃',abv:40,def:50,cat:'spirits',name:{ru:'Ром белый',en:'White rum'}},
+  {id:'s-rum-d',emoji:'🥃',abv:40,def:50,cat:'spirits',name:{ru:'Ром тёмный',en:'Dark rum'}},
+  {id:'s-gin',emoji:'🥃',abv:40,def:50,cat:'spirits',name:{ru:'Джин',en:'Gin'}},
+  {id:'s-teq',emoji:'🥃',abv:40,def:50,cat:'spirits',name:{ru:'Текила',en:'Tequila'}},
+  {id:'s-brandy',emoji:'🥃',abv:36,def:50,cat:'spirits',name:{ru:'Бренди',en:'Brandy'}},
+  {id:'s-cognac',emoji:'🥃',abv:40,def:50,cat:'spirits',name:{ru:'Коньяк',en:'Cognac'}},
+  {id:'s-absinthe',emoji:'🥃',abv:60,def:30,cat:'spirits',name:{ru:'Абсент',en:'Absinthe'}},
+  {id:'s-sambuca',emoji:'🥃',abv:38,def:50,cat:'spirits',name:{ru:'Самбука',en:'Sambuca'}},
+  {id:'l-baileys',emoji:'🥃',abv:17,def:50,cat:'liqueur',name:{ru:'Baileys',en:'Baileys'}},
+  {id:'l-kahlua',emoji:'🥃',abv:20,def:50,cat:'liqueur',name:{ru:'Kahlua',en:'Kahlua'}},
+  {id:'l-amaretto',emoji:'🥃',abv:28,def:50,cat:'liqueur',name:{ru:'Amaretto',en:'Amaretto'}},
+  {id:'l-limoncello',emoji:'🥃',abv:30,def:50,cat:'liqueur',name:{ru:'Limoncello',en:'Limoncello'}},
+  {id:'l-jager',emoji:'🥃',abv:35,def:50,cat:'liqueur',name:{ru:'Jägermeister',en:'Jägermeister'}},
+  {id:'l-campari',emoji:'🥃',abv:25,def:50,cat:'liqueur',name:{ru:'Campari',en:'Campari'}},
+  {id:'l-aperol',emoji:'🥃',abv:11,def:80,cat:'liqueur',name:{ru:'Aperol',en:'Aperol'}},
+  {id:'l-grand',emoji:'🥃',abv:40,def:50,cat:'liqueur',name:{ru:'Grand Marnier',en:'Grand Marnier'}},
+  {id:'c-mojito',emoji:'🍹',abv:12,def:250,cat:'cocktail',name:{ru:'Мохито',en:'Mojito'}},
+  {id:'c-margarita',emoji:'🍹',abv:18,def:200,cat:'cocktail',name:{ru:'Маргарита',en:'Margarita'}},
+  {id:'c-martini',emoji:'🍸',abv:28,def:150,cat:'cocktail',name:{ru:'Мартини сухой',en:'Dry Martini'}},
+  {id:'c-oldfash',emoji:'🥃',abv:32,def:180,cat:'cocktail',name:{ru:'Old Fashioned',en:'Old Fashioned'}},
+  {id:'c-negroni',emoji:'🍸',abv:26,def:180,cat:'cocktail',name:{ru:'Негрони',en:'Negroni'}},
+  {id:'c-daiquiri',emoji:'🍹',abv:18,def:200,cat:'cocktail',name:{ru:'Дайкири',en:'Daiquiri'}},
+  {id:'c-pina',emoji:'🍹',abv:12,def:250,cat:'cocktail',name:{ru:'Пина Колада',en:'Piña Colada'}},
+  {id:'c-longisland',emoji:'🍹',abv:22,def:250,cat:'cocktail',name:{ru:'Лонг-Айленд',en:'Long Island Iced Tea'}},
+  {id:'c-bm',emoji:'🍹',abv:10,def:250,cat:'cocktail',name:{ru:'Кровавая Мэри',en:'Bloody Mary'}},
+  {id:'c-wsour',emoji:'🍹',abv:16,def:200,cat:'cocktail',name:{ru:'Виски Сауэр',en:'Whiskey Sour'}},
+  {id:'c-maitai',emoji:'🍹',abv:22,def:200,cat:'cocktail',name:{ru:'Май Тай',en:'Mai Tai'}},
+  {id:'c-spritz',emoji:'🍹',abv:8,def:250,cat:'cocktail',name:{ru:'Апероль Шприц',en:'Aperol Spritz'}},
+  {id:'c-espmart',emoji:'🍸',abv:18,def:150,cat:'cocktail',name:{ru:'Эспрессо Мартини',en:'Espresso Martini'}},
+  {id:'c-gintonic',emoji:'🍸',abv:10,def:250,cat:'cocktail',name:{ru:'Джин-тоник',en:'Gin & Tonic'}},
+  {id:'c-cosmo',emoji:'🍸',abv:16,def:180,cat:'cocktail',name:{ru:'Космополитен',en:'Cosmopolitan'}},
+  {id:'c-manhattan',emoji:'🥃',abv:30,def:150,cat:'cocktail',name:{ru:'Манхэттен',en:'Manhattan'}},
+  {id:'c-sidecar',emoji:'🍸',abv:22,def:180,cat:'cocktail',name:{ru:'Сайдкар',en:'Sidecar'}},
+  {id:'c-mule',emoji:'🥤',abv:12,def:250,cat:'cocktail',name:{ru:'Московский Мул',en:'Moscow Mule'}},
+  {id:'cd-reg',emoji:'🍎',abv:4.5,def:500,cat:'cider',name:{ru:'Сидр обычный',en:'Cider regular'}},
+  {id:'cd-dry',emoji:'🍎',abv:6,def:500,cat:'cider',name:{ru:'Сидр сухой',en:'Cider dry'}},
+  {id:'cd-pear',emoji:'🍐',abv:4.5,def:500,cat:'cider',name:{ru:'Сидр грушевый',en:'Perry'}},
+  {id:'o-seltzer',emoji:'🥤',abv:5,def:330,cat:'other',name:{ru:'Хард сельцер',en:'Hard seltzer'}},
+  {id:'o-sake',emoji:'🍶',abv:15,def:150,cat:'other',name:{ru:'Саке',en:'Sake'}},
+];
+
+const state = {
+  lang: localStorage.getItem('bacLang') || 'ru',
+  gender: 'male',
+  drinks: [],
+  activeCat: 'beer',
+  searchQuery: '',
+};
+
+const CATS = ['beer','wine','spirits','liqueur','cocktail','cider','other'];
+const CAT_LABELS = ['catBeer','catWine','catSpirits','catLiqueur','catCocktail','catCider','catOther'];
+const t = key => LANG[state.lang][key] || key;
+
+function calcPeakBAC(grams, kg, gender) {
+  const r = gender==='female'?0.55:0.68;
+  return kg>0 ? (grams*100)/(kg*1000*r) : 0;
+}
+function calcCurrentBAC(peak, hours) { return Math.max(0, peak - 0.015*hours); }
+function alcGrams(ml, abv) { return ml*(abv/100)*0.789; }
+
+function getState(bac) {
+  if (bac<=0.005) return {color:'#4ade80',labelKey:'stateSober',level:0};
+  if (bac<0.04) return {color:'#84cc16',labelKey:'stateEuphoria',level:1};
+  if (bac<0.08) return {color:'#eab308',labelKey:'stateExcite',level:2};
+  if (bac<0.15) return {color:'#f97316',labelKey:'stateConfuse',level:3};
+  if (bac<0.20) return {color:'#ef4444',labelKey:'stateStupor',level:4};
+  if (bac<0.30) return {color:'#dc2626',labelKey:'stateComa',level:5};
+  return {color:'#991b1b',labelKey:'stateDanger',level:6};
+}
+
+function getRecovery(pk) {
+  if (pk<0.04) return {sev:'none',titleKey:'recMildT',textKey:'recMildD',tips:['tip1'],water:'1–2 стакана',food:'Необязательно',sleep:'Как обычно',avoid:'—'};
+  if (pk<0.08) return {sev:'mild',titleKey:'recMildT',textKey:'recMildD',tips:['tip1','tip3'],water:'1–1.5 л',food:'Бананы, тост, яйца',sleep:'7–8 ч',avoid:'Кофе, жирное'};
+  if (pk<0.15) return {sev:'mod',titleKey:'recModT',textKey:'recModD',tips:['tip1','tip3','tip4'],water:'1.5–2.5 л + электролиты',food:'Бульон, омлет, овсянка',sleep:'8+ ч',avoid:'Кофе, алкоголь, спорт'};
+  if (pk<0.20) return {sev:'strong',titleKey:'recStrongT',textKey:'recStrongD',tips:['tip1','tip2','tip3','tip4'],water:'2–3 л + регидрон',food:'Только бульон',sleep:'Не ложиться',avoid:'Всё, кроме воды'};
+  return {sev:'severe',titleKey:'recSevereT',textKey:'recSevereD',tips:['tip2','tip3'],water:'Немедленно!',food:'—',sleep:'Наблюдение',avoid:'Врач!'};
+}
+
+// Render cat tabs
+function renderCatTabs() {
+  document.getElementById('cat-tabs').innerHTML = CATS.map((c,i) =>
+    `<button class="cat-tab${state.activeCat===c?' active':''}" onclick="setCat('${c}')">${t(CAT_LABELS[i])}</button>`
+  ).join('');
+}
+
+// Render drinks grid
+function renderDrinks() {
+  const grid = document.getElementById('drinks-grid');
+  const q = state.searchQuery.toLowerCase();
+  let list = q ? DRINKS.filter(d => d.name.ru.includes(q)||d.name.en.toLowerCase().includes(q))
+               : DRINKS.filter(d => d.cat===state.activeCat);
+  grid.innerHTML = list.length ? list.map(d =>
+    `<div class="drink-card" onclick="openModal('${d.id}')"><span class="emoji">${d.emoji}</span><span class="name">${d.name[state.lang]}</span><span class="abv">${d.abv}% · ${d.def} мл</span></div>`
+  ).join('') : `<div style="grid-column:1/-1;text-align:center;padding:1rem;font-size:0.8rem;color:rgba(232,228,224,0.15);">${state.lang==='ru'?'Ничего не найдено':'Nothing found'}</div>`;
+}
+
+function filterDrinks() { state.searchQuery=document.getElementById('search-input').value; renderDrinks(); }
+function setCat(c) { state.activeCat=c; state.searchQuery=''; document.getElementById('search-input').value=''; renderCatTabs(); renderDrinks(); }
+
+// Modal
+function openModal(id) {
+  const d = DRINKS.find(x=>x.id===id); if(!d) return;
+  state._modalDrink = d;
+  document.getElementById('modal-title').textContent = `${d.emoji} ${d.name[state.lang]}`;
+  document.getElementById('modal-vol').value = d.def;
+  document.getElementById('modal-cancel').textContent = t('modalCancel');
+  document.getElementById('modal-add').textContent = t('modalAdd');
+  document.getElementById('modal-presets').innerHTML = [50,100,150,200,250,330,500].map(v =>
+    `<button class="vol-preset" onclick="document.getElementById('modal-vol').value=${v}">${v} мл</button>`
+  ).join('');
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('modal-vol').focus(),300);
+}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); delete state._modalDrink; }
+function confirmModal() {
+  const d = state._modalDrink; if(!d) return;
+  const v = parseFloat(document.getElementById('modal-vol').value);
+  if(!v||v<=0) return;
+  state.drinks.push({id:d.id,name:d.name,emoji:d.emoji,abv:d.abv,vol:v,grams:alcGrams(v,d.abv)});
+  closeModal(); renderMyDrinks(); updateDash();
+}
+document.getElementById('modal-overlay').addEventListener('click', function(e) { if(e.target===this) closeModal(); });
+
+// My drinks
+function renderMyDrinks() {
+  const el = document.getElementById('my-drinks-list');
+  if (!state.drinks.length) { el.innerHTML=`<div class="empty-drinks">${t('emptyDrinks')}</div>`; document.getElementById('total-alc').textContent=''; return; }
+  el.innerHTML = state.drinks.map((d,i)=>
+    `<div class="drink-entry"><span class="emoji">${d.emoji}</span><div class="info"><div class="top">${d.name[state.lang]}</div><div class="sub">${d.vol} мл · ${d.abv}%</div></div><span class="alc-grams">${d.grams.toFixed(1)}г</span><button class="rm-btn" onclick="removeDrink(${i})">✕</button></div>`
+  ).join('');
+  document.getElementById('total-alc').textContent = `${state.lang==='ru'?'Всего чистого спирта':'Total pure alcohol'}: ${state.drinks.reduce((s,d)=>s+d.grams,0).toFixed(1)} г`;
+}
+function removeDrink(i) { state.drinks.splice(i,1); renderMyDrinks(); updateDash(); }
+function clearDrinks() { state.drinks=[]; renderMyDrinks(); updateDash(); }
+
+// Dashboard
+function updateDash() {
+  const hours = parseFloat(document.getElementById('hours-slider').value)||0;
+  const kg = parseFloat(document.getElementById('weight-input').value)||60;
+  const g = state.drinks.reduce((s,d)=>s+d.grams,0);
+  const peak = calcPeakBAC(g, kg, state.gender);
+  const cur = calcCurrentBAC(peak, hours);
+  const st = getState(cur);
+
+  const valEl = document.getElementById('bac-value');
+  valEl.textContent = cur.toFixed(3); valEl.style.color = st.color;
+
+  const sl = document.getElementById('state-label');
+  sl.textContent = t(st.labelKey); sl.style.background = `${st.color}1a`; sl.style.color = st.color; sl.style.border = `1px solid ${st.color}33`;
+
+  const pct = Math.min(cur/0.35*100, 100);
+  const bar = document.getElementById('bac-bar');
+  bar.style.width = pct+'%'; bar.style.background = st.color;
+
+  document.getElementById('bac-state-name').textContent = t(st.labelKey); document.getElementById('bac-state-name').style.color = st.color;
+
+  const rem = peak/0.015 - hours;
+  document.getElementById('bac-time-zero').textContent = rem<=0&&cur<=0.005 ? '0' : rem<=0 ? '~15 мин' : rem<1 ? `${Math.round(rem*60)} мин` : `${Math.floor(rem)} ч ${Math.round((rem-Math.floor(rem))*60)} мин`;
+
+  document.getElementById('bac-peak').textContent = peak.toFixed(3)+'‰';
+  document.getElementById('bac-grams').textContent = g.toFixed(1);
+
+  const we = document.getElementById('warning-section');
+  if (cur>=0.30) { we.style.display='block'; document.getElementById('warning-text').textContent=t('warning2'); }
+  else if (cur>=0.15) { we.style.display='block'; document.getElementById('warning-text').textContent=t('warning1'); }
+  else { we.style.display='none'; }
+
+  renderRecovery(peak);
+}
+
+function renderRecovery(pk) {
+  const rec = getRecovery(pk);
+  const el = document.getElementById('recovery-content');
+  if (rec.sev==='none') {
+    el.innerHTML = `<div class="rec-card"><h4 style="color:#4ade80">✅ ${t(rec.titleKey)}</h4><p>${t(rec.textKey)}</p></div>`;
+    return;
+  }
+  const gw = state.gender==='female' ? `<div class="rec-card" style="border-color:rgba(255,180,200,0.15);"><h4 style="color:#ffb0c0">${t('womenT')}</h4><p>${t('womenD')}</p></div>` : '';
+  el.innerHTML = gw +
+    `<div class="rec-card"><h4 style="color:${pk>=0.15?'#ef4444':'#f97316'}">${t(rec.titleKey)}</h4><p>${t(rec.textKey)}</p></div>` +
+    `<div class="rec-card"><h4>💧 ${t('recWater')}</h4><p>${rec.water}</p></div>` +
+    `<div class="rec-card"><h4>🍽️ ${t('recFood')}</h4><p>${rec.food}</p></div>` +
+    `<div class="rec-card"><h4>😴 ${t('recSleep')}</h4><p>${rec.sleep}</p></div>` +
+    `<div class="rec-card"><h4>🚫 ${t('recAvoid')}</h4><p>${rec.avoid}</p></div>` +
+    `<div class="rec-card"><h4>💡 Советы</h4><ul>${rec.tips.map(tk=>`<li>${t(tk)}</li>`).join('')}</ul></div>`;
+}
+
+function renderMemo() {
+  const items = [
+    {h:'memo1h',d:'memo1d',e:'🍋'},{h:'memo2h',d:'memo2d',e:'🥣'},{h:'memo3h',d:'memo3d',e:'🍌'},
+    {h:'memo4h',d:'memo4d',e:'🍳'},{h:'memo5h',d:'memo5d',e:'🍯'},{h:'memo6h',d:'memo6d',e:'🫚'}
+  ];
+  document.getElementById('memo-grid').innerHTML = items.map(i=>`<div class="memo-item"><span class="emoji">${i.e}</span><h4>${t(i.h)}</h4><p>${t(i.d)}</p></div>`).join('');
+}
+
+function switchLang(lang) {
+  state.lang = lang;
+  localStorage.setItem('bacLang', lang);
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang===lang));
+  document.documentElement.lang = lang;
+  // Static text
+  ['heroTitle','heroSub','profTitle','profSub','lGender','gFemale','gMale','lAge','lWeight','lHours',
+   'drTitle','drSub','myTitle','clearBtn','dashTitle','dashSub','bacLabel','lState','lSober','lPeak','lGrams',
+   'recTitle','recSub','memoTitle','memoSub','footer'].forEach(k => {
+    const el = document.getElementById(k==='heroTitle'?'hero-title':k==='heroSub'?'hero-sub':
+      k==='profTitle'?'prof-title':k==='profSub'?'prof-sub':
+      k==='drTitle'?'dr-title':k==='drSub'?'dr-sub':
+      k==='dashTitle'?'dash-title':k==='dashSub'?'dash-sub':
+      k==='recTitle'?'rec-title':k==='recSub'?'rec-sub':
+      k==='memoTitle'?'memo-title':k==='memoSub'?'memo-sub':
+      k==='bacLabel'?'bac-sub-label':
+      k==='footer'?'footer-text':k==='lHours'?'l-hours':
+      k);
+    if (el) el.textContent = t(k);
+  });
+  document.getElementById('search-input').placeholder = t('searchPl');
+  renderCatTabs(); renderDrinks(); renderMyDrinks(); renderMemo(); updateDash();
+}
+
+// Gender
+function setGender(g) { state.gender=g; document.querySelectorAll('.gender-btn').forEach(b=>b.classList.toggle('active',b.dataset.gender===g)); updateDash(); }
+
+// Hours sync
+function syncHours(v) { document.getElementById('hours-display').textContent=v; updateDash(); }
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  switchLang(state.lang);
+  renderCatTabs(); renderDrinks(); renderMemo();
+  document.getElementById('age-input').addEventListener('input', function() { state.age=parseInt(this.value)||25; });
+  document.getElementById('weight-input').addEventListener('input', updateDash);
+  document.getElementById('hours-slider').addEventListener('input', function() { syncHours(this.value); });
+});
+</script>
 </body>
 </html>
