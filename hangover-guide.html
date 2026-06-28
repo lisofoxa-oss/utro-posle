@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Утро после — памятка</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #0f0e12;
+    color: #e8e4e0;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    position: relative;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(160deg, #0f0e12 0%, #1a1625 40%, #0d0b14 100%);
+    overflow: hidden;
+    padding: env(safe-area-inset-top) 0;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: min(80vw, 600px);
+    height: min(80vw, 600px);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(180, 120, 255, 0.08) 0%, transparent 70%);
+    top: -30%;
+    right: -20%;
+    animation: float 12s ease-in-out infinite;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    width: min(60vw, 400px);
+    height: min(60vw, 400px);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 180, 200, 0.06) 0%, transparent 70%);
+    bottom: -15%;
+    left: -20%;
+    animation: float 10s ease-in-out infinite reverse;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(20px, -20px); }
+  }
+
+  .hero-content { position: relative; z-index: 1; padding: 2rem 1.5rem; width: 100%; }
+
+  .hero-badge {
+    display: inline-block;
+    padding: 0.35rem 1rem;
+    border: 1px solid rgba(180, 120, 255, 0.3);
+    border-radius: 100px;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(180, 120, 255, 0.7);
+    margin-bottom: 1.2rem;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 14vw, 5rem);
+    font-weight: 400;
+    line-height: 1.05;
+    margin-bottom: 0.8rem;
+    background: linear-gradient(135deg, #e8e4e0 0%, #b894e8 50%, #e8e4e0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: clamp(0.95rem, 3.5vw, 1.2rem);
+    color: rgba(232, 228, 224, 0.45);
+    max-width: 440px;
+    margin: 0 auto;
+    font-weight: 300;
+    padding: 0 0.5rem;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: max(1.5rem, env(safe-area-inset-bottom));
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(232, 228, 224, 0.2);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    animation: bounce 2s infinite;
+    white-space: nowrap;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-6px); }
+  }
+
+  /* ===== STICKY NAV ===== */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(15, 14, 18, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 env(safe-area-inset-right) 0 env(safe-area-inset-left);
+  }
+  .nav::-webkit-scrollbar { display: none; }
+
+  .nav-inner {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.6rem 1rem;
+    min-width: max-content;
+    justify-content: center;
+  }
+
+  .nav a {
+    display: block;
+    padding: 0.5rem 0.9rem;
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: rgba(232, 228, 224, 0.4);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.25s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .nav a:active { background: rgba(180, 120, 255, 0.1); }
+
+  /* ===== CONTAINER ===== */
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 1.2rem;
+  }
+
+  /* ===== SECTIONS ===== */
+  section { padding: 2.5rem 0; }
+  section:first-of-type { padding-top: 1.5rem; }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 0.3rem;
+    line-height: 1.2;
+  }
+
+  .section-subtitle {
+    color: rgba(232, 228, 224, 0.35);
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  /* ===== CARDS ===== */
+  .card-grid { display: flex; flex-direction: column; gap: 0.75rem; }
+
+  .card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 1.2rem;
+    transition: all 0.3s;
+  }
+
+  .card:active { background: rgba(255, 255, 255, 0.06); }
+
+  .card-icon { font-size: 1.3rem; margin-bottom: 0.5rem; display: block; }
+  .card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; color: #d4b8ff; }
+  .card p { font-size: 0.82rem; color: rgba(232, 228, 224, 0.55); font-weight: 300; line-height: 1.6; }
+  .card ul { list-style: none; padding: 0; margin-top: 0.3rem; }
+  .card li {
+    font-size: 0.82rem;
+    color: rgba(232, 228, 224, 0.55);
+    font-weight: 300;
+    padding: 0.25rem 0;
+    padding-left: 1rem;
+    position: relative;
+    line-height: 1.5;
+  }
+  .card li::before { content: '—'; position: absolute; left: 0; color: rgba(180, 120, 255, 0.5); }
+
+  /* ===== TIPS (блоки с предупреждениями) ===== */
+  .tip-list { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 1rem; }
+
+  .tip-item {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 0.9rem 1rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .tip-item .emoji { font-size: 1.1rem; min-width: 1.3rem; line-height: 1.4; }
+  .tip-item .text {
+    font-size: 0.82rem;
+    color: rgba(232, 228, 224, 0.55);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+  .tip-item .text strong { color: rgba(232, 228, 224, 0.8); font-weight: 500; }
+
+  /* ===== HARM STATS ===== */
+  .harm-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .harm-stat {
+    text-align: center;
+    padding: 1.2rem 0.8rem;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .harm-stat .number {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #ff8a8a;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .harm-stat .label {
+    font-size: 0.75rem;
+    color: rgba(232, 228, 224, 0.45);
+    font-weight: 300;
+    line-height: 1.4;
+  }
+
+  /* ===== FACTS ===== */
+  .facts-list { display: flex; flex-direction: column; gap: 0.6rem; }
+
+  .fact-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 1rem 1.2rem;
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+  }
+
+  .fact-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: rgba(180, 120, 255, 0.2);
+    line-height: 1.1;
+    min-width: 1.8rem;
+  }
+
+  .fact-card h3 { font-size: 0.88rem; font-weight: 500; margin-bottom: 0.2rem; color: #d4b8ff; }
+  .fact-card p { font-size: 0.8rem; color: rgba(232, 228, 224, 0.5); font-weight: 300; line-height: 1.5; }
+
+  /* ===== QUOTE ===== */
+  .quote-block {
+    background: linear-gradient(135deg, rgba(180, 120, 255, 0.06), rgba(255, 180, 200, 0.04));
+    border-left: 2px solid rgba(180, 120, 255, 0.3);
+    border-radius: 0 14px 14px 0;
+    padding: 1.5rem 1.5rem 1.5rem 1.8rem;
+    margin: 1.5rem 0;
+  }
+
+  .quote-block p {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-style: italic;
+    color: rgba(232, 228, 224, 0.7);
+    line-height: 1.6;
+  }
+
+  .quote-block .author {
+    margin-top: 0.6rem;
+    font-size: 0.75rem;
+    font-style: normal;
+    color: rgba(232, 228, 224, 0.3);
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ===== WOMEN SECTION ===== */
+  .women-section {
+    background: linear-gradient(135deg, rgba(255, 180, 200, 0.04), rgba(180, 120, 255, 0.04));
+    border: 1px solid rgba(255, 180, 200, 0.1);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .women-section h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    color: #ffc0d0;
+  }
+
+  .warning-item {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .warning-item:last-child { border-bottom: none; }
+
+  .warning-icon { font-size: 1.1rem; min-width: 1.3rem; line-height: 1.5; }
+  .warning-item h4 { font-size: 0.85rem; font-weight: 500; margin-bottom: 0.15rem; color: #ffb0c0; }
+  .warning-item p { font-size: 0.8rem; color: rgba(232, 228, 224, 0.5); font-weight: 300; line-height: 1.5; }
+
+  /* ===== DIVIDER ===== */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(180, 120, 255, 0.15), transparent);
+    margin: 0.5rem 0;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    padding: 2.5rem 1.5rem max(2.5rem, env(safe-area-inset-bottom));
+    color: rgba(232, 228, 224, 0.15);
+    font-size: 0.75rem;
+    font-weight: 300;
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+  }
+
+  /* ===== TABLET+ ===== */
+  @media (min-width: 480px) {
+    .container { padding: 0 2rem; }
+    section { padding: 3rem 0; }
+    .card-grid.sm-2 { flex-direction: row; flex-wrap: wrap; }
+    .card-grid.sm-2 .card { flex: 1 1 calc(50% - 0.375rem); }
+    .harm-grid { gap: 0.75rem; }
+    .harm-stat { padding: 1.5rem 1rem; }
+    .harm-stat .number { font-size: 1.8rem; }
+  }
+
+  @media (min-width: 640px) {
+    body { background: #0d0c10; }
+    .container { max-width: 720px; padding: 0 2.5rem; }
+    section { padding: 4rem 0; }
+    .card-grid { flex-direction: row; flex-wrap: wrap; }
+    .card { flex: 1 1 calc(50% - 0.375rem); padding: 1.5rem; }
+    .card-grid.three .card { flex: 1 1 calc(33.333% - 0.5rem); }
+    .harm-grid { grid-template-columns: repeat(4, 1fr); }
+    .section-title { font-size: 1.75rem; }
+    .women-section { padding: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">Памятка</div>
+    <h1>Утро после</h1>
+    <p>Что делать, что есть и о чём стоит знать — без морализаторства, по фактам</p>
+  </div>
+  <div class="scroll-hint">Листай</div>
+</section>
+
+<!-- ===== NAV ===== -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#morning">🌅 Утро</a>
+    <a href="#day">☀️ День</a>
+    <a href="#harm">⚠️ Вред</a>
+    <a href="#women">👩 Девушкам</a>
+    <a href="#quick-tips">🧭 Чек-лист</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- ===== MORNING ===== -->
+  <section id="morning">
+    <h2 class="section-title">🌅 Утро — первая помощь</h2>
+    <p class="section-subtitle">Организм обезвожен, истощён и требует бережного обращения</p>
+
+    <div class="card-grid sm-2">
+      <div class="card">
+        <span class="card-icon">💧</span>
+        <h3>Вода — база</h3>
+        <p>Алкоголь — мощный диуретик. Первое и главное — восполнить жидкость. Начни со стакана воды, лучше с лимоном и щепоткой соли — это электролиты.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🥣</span>
+        <h3>Куриный бульон</h3>
+        <p>Тёплый, нежирный — даёт соль, аминокислоты и не нагружает желудок. Работает лучше любого энергетика.</p>
+      </div>
+    </div>
+
+    <div class="card-grid three" style="margin-top: 0.75rem;">
+      <div class="card">
+        <span class="card-icon">🍌</span>
+        <h3>Бананы</h3>
+        <p>Калий, магний, быстрая энергия. Алкоголь вымывает электролиты — банан закрывает базовые потребности мягко и натурально.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🍳</span>
+        <h3>Яичница / омлет</h3>
+        <p>Яйца богаты цистеином — аминокислотой, которая помогает расщеплять ацетальдегид (тот самый токсин, из-за которого тошнит и болит голова).</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🍯</span>
+        <h3>Тост с мёдом</h3>
+        <p>Тост впитывает остатки алкоголя в желудке, мёд даёт фруктозу — она ускоряет метаболизм этанола. Добавь кусочек масла для жиров.</p>
+      </div>
+    </div>
+
+    <div class="tip-list">
+      <div class="tip-item">
+        <span class="emoji">🚫</span>
+        <span class="text"><strong>Кошмарный вариант:</strong> кофе натощак — он сужает сосуды (голова будет болеть сильнее) и обезвоживает дальше.</span>
+      </div>
+      <div class="tip-item">
+        <span class="emoji">🚫</span>
+        <span class="text"><strong>Не вздумай:</strong> «опохмелиться». Новый алкоголь только отсрочит похмелье и увеличит нагрузку на печень и сердце.</span>
+      </div>
+      <div class="tip-item">
+        <span class="emoji">✅</span>
+        <span class="text"><strong>Лучшее, что можно сделать:</strong> открыть окно (кислород ускоряет детоксикацию), принять тёплый душ, лечь с холодным компрессом на лоб.</span>
+      </div>
+    </div>
+
+    <div class="quote-block">
+      <p>«Похмелье — это не наказание. Это защитный сигнал организма: "пожалуйста, дай мне воды, отдыха и не делай так больше"»</p>
+      <div class="author">— неизвестный нейробиолог</div>
+    </div>
+  </section>
+
+  <!-- ===== DAY ===== -->
+  <section id="day">
+    <h2 class="section-title">☀️ День — восстановление</h2>
+    <p class="section-subtitle">Желудок успокоился, пора помочь организму вернуться в строй</p>
+
+    <div class="card-grid sm-2">
+      <div class="card">
+        <span class="card-icon">🥑</span>
+        <h3>Лёгкая, но питательная еда</h3>
+        <ul>
+          <li>Авокадо на тосте — калий + здоровые жиры</li>
+          <li>Овсяная каша на воде — обволакивает желудок</li>
+          <li>Паста с овощами — сложные углеводы для печени</li>
+          <li>Арбуз, дыня, виноград — фруктоза + вода</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="card-icon">🧘</span>
+        <h3>Режим: никакого геройства</h3>
+        <ul>
+          <li>Прогулка в парке — оксигенация крови</li>
+          <li>Душ контрастный (заканчивать тёплым)</li>
+          <li>Сон — лучшее лекарство, поспать днём</li>
+          <li>Никакого спорта — сердце и так перегружено</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card-grid three" style="margin-top: 0.75rem;">
+      <div class="card">
+        <span class="card-icon">🫚</span>
+        <h3>Имбирный чай</h3>
+        <p>Снимает тошноту, успокаивает желудок, обладает лёгким противовоспалительным действием.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🥒</span>
+        <h3>Рассол (да, работает)</h3>
+        <p>Огуречный или капустный — электролиты в чистом виде. Только натурального брожения, не уксусный.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">💊</span>
+        <h3>Ибупрофен (если очень надо)</h3>
+        <p>Снимает головную боль. Но: не на пустой желудок и не парацетамол — он даёт нагрузку на печень, которая и так занята.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== HARM ===== -->
+  <section id="harm">
+    <h2 class="section-title">⚠️ Цифры, о которых редко говорят</h2>
+    <p class="section-subtitle">Не чтобы напугать — чтобы был повод задуматься</p>
+
+    <div class="harm-grid">
+      <div class="harm-stat">
+        <span class="number">3 млн</span>
+        <span class="label">смертей в год от алкоголя в мире (ВОЗ)</span>
+      </div>
+      <div class="harm-stat">
+        <span class="number">1-е</span>
+        <span class="label">место среди причин смерти людей 15–49 лет</span>
+      </div>
+      <div class="harm-stat">
+        <span class="number">200+</span>
+        <span class="label">заболеваний, связанных с алкоголем</span>
+      </div>
+      <div class="harm-stat">
+        <span class="number">1</span>
+        <span class="label">стандартный напиток = ~14 г чистого спирта</span>
+      </div>
+    </div>
+
+    <div class="facts-list">
+      <div class="fact-card">
+        <span class="fact-number">01</span>
+        <div>
+          <h3>Алкоголь — канцероген группы 1</h3>
+          <p>Та же категория, что асбест и формальдегид. Доказанная связь с раком груди, пищевода, печени, толстой кишки. Безопасной дозы не существует.</p>
+        </div>
+      </div>
+      <div class="fact-card">
+        <span class="fact-number">02</span>
+        <div>
+          <h3>Снижение качества сна</h3>
+          <p>Алкоголь нарушает REM-фазу. Даже если ты проспала 8 часов — организм не восстановился. Отсюда разбитость, тревожность, туман в голове.</p>
+        </div>
+      </div>
+      <div class="fact-card">
+        <span class="fact-number">03</span>
+        <div>
+          <h3>Удар по микробиому</h3>
+          <p>Даже один эпизод меняет состав кишечных бактерий на недели. А здоровый кишечник — это иммунитет, настроение и кожа.</p>
+        </div>
+      </div>
+      <div class="fact-card">
+        <span class="fact-number">04</span>
+        <div>
+          <h3>Тревога на следующий день — не "всё в голове"</h3>
+          <p>Алкоголь временно повышает GABA (торможение), а потом резко её снижает — мозг остаётся без защиты. Отсюда паника, навязчивые мысли, "hangxiety".</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WOMEN ===== -->
+  <section id="women">
+    <h2 class="section-title">👩 Для молодой девушки — отдельно</h2>
+    <p class="section-subtitle">Организм женщины метаболизирует алкоголь иначе. Это не «слабость» — это физиология.</p>
+
+    <div class="women-section">
+      <h3>Почему важно знать</h3>
+
+      <div class="warning-item">
+        <span class="warning-icon">🧬</span>
+        <div>
+          <h4>Меньше ферментов — больше токсинов</h4>
+          <p>В желудке женщины меньше алкогольдегидрогеназы — фермента, расщепляющего алкоголь. При одинаковом количестве выпитого концентрация этанола в крови женщины выше, чем у мужчины того же веса. Похмелье тяжелее, токсическая нагрузка — выше.</p>
+        </div>
+      </div>
+
+      <div class="warning-item">
+        <span class="warning-icon">🎗️</span>
+        <div>
+          <h4>Рак груди: прямая связь</h4>
+          <p>Даже 1 порция алкоголя в день повышает риск рака молочной железы на 7–10%. Каждая дополнительная порция увеличивает риск. Это данные сотен тысяч наблюдений.</p>
+        </div>
+      </div>
+
+      <div class="warning-item">
+        <span class="warning-icon">💊</span>
+        <div>
+          <h4>Гормональный фон и цикл</h4>
+          <p>Алкоголь нарушает баланс эстрогена и прогестерона, может сдвигать менструальный цикл, усиливать ПМС, снижать фертильность. Чем регулярнее употребление — тем заметнее эффект.</p>
+        </div>
+      </div>
+
+      <div class="warning-item">
+        <span class="warning-icon">🧠</span>
+        <div>
+          <h4>Кожа, внешность и отёки</h4>
+          <p>Алкоголь обезвоживает кожу, расширяет сосуды (купероз), снижает выработку коллагена. На утро — серый цвет лица, отёки, тёмные круги. Регулярное употребление старит визуально.</p>
+        </div>
+      </div>
+
+      <div class="warning-item">
+        <span class="warning-icon">❤️</span>
+        <div>
+          <h4>Сердце: женщины уязвимее</h4>
+          <p>Алкогольная кардиомиопатия у женщин развивается быстрее и при меньших дозах. Риск инсульта у женщин-курильщиц, принимающих контрацептивы и употребляющих алкоголь — экспоненциально выше.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote-block">
+      <p>«Не "не пей вообще". Но знай, как это работает. Выбор осознанный — лучше выбора по привычке»</p>
+      <div class="author">— просто напоминание</div>
+    </div>
+  </section>
+
+  <!-- ===== QUICK TIPS ===== -->
+  <section id="quick-tips">
+    <h2 class="section-title">🧭 Если совсем коротко</h2>
+    <p class="section-subtitle">Чек-лист на утро</p>
+
+    <div class="tip-list">
+      <div class="tip-item">
+        <span class="emoji">💧</span>
+        <span class="text"><strong>Вода + соль + лимон</strong> — первый шаг</span>
+      </div>
+      <div class="tip-item">
+        <span class="emoji">🥣</span>
+        <span class="text"><strong>Бульон</strong> — второй</span>
+      </div>
+      <div class="tip-item">
+        <span class="emoji">🛌</span>
+        <span class="text"><strong>Сон, тишина, прохлада</strong> — дай организму прийти в себя</span>
+      </div>
+      <div class="tip-item">
+        <span class="emoji">🚫</span>
+        <span class="text"><strong>Не «лечи» похмелье алкоголем</strong> — это не лечение, а продление интоксикации</span>
+      </div>
+      <div class="tip-item">
+        <span class="emoji">📉</span>
+        <span class="text"><strong>Одна порция в день</strong> — верхняя граница low-risk по ВОЗ. Не норма, а потолок</span>
+      </div>
+      <div class="tip-item">
+        <span class="emoji">🌟</span>
+        <span class="text"><strong>Вовсе не пить — это нормально.</strong> Лучший способ избежать похмелья — не получить его</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  Никакой морали, только информация.<br>
+  Береги себя
+</footer>
+
+</body>
+</html>
